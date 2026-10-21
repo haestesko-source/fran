@@ -3,29 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Créer le QR code</title>
+<title>QR code du questionnaire</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 body { font-family: system-ui, sans-serif; background: #efe6f3; color: #2e1630; margin: 0; padding: 32px 16px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
-input { width: 100%; max-width: 420px; font: inherit; padding: 12px 14px; border-radius: 12px; border: 1.5px solid #d9c6df; }
 #qr { background: #fff; padding: 20px; border-radius: 16px; }
-p { color: #7b6680; margin: 0; text-align: center; max-width: 420px; }
+p { color: #7b6680; margin: 0; text-align: center; max-width: 420px; line-height: 1.5; }
+b { color: #2e1630; font-weight: 500; word-break: break-all; }
 </style>
 </head>
 <body>
-<h1 style="margin:0;font-weight:500">QR code</h1>
-<p>Colle l'adresse de ton site en ligne, puis fais un clic droit sur le QR code → « Enregistrer l'image ».</p>
-<input id="url" type="text" placeholder="https://ton-site.netlify.app">
+<h1 style="margin:0;font-weight:500;text-align:center">Le QR code de ton questionnaire</h1>
+<p>Il ouvre <b>https://haestesko-source.github.io/fran/</b><br>Scanne-le avec ton téléphone pour tester, puis imprime-le.</p>
 <div id="qr"></div>
 <script>
-const box = document.getElementById("qr");
-const input = document.getElementById("url");
-function draw() {
-  box.innerHTML = "";
-  new QRCode(box, { text: input.value.trim() || "https://example.com", width: 260, height: 260, colorDark: "#2e1630" });
-}
-input.oninput = draw;
-draw();
+const SITE = "https://haestesko-source.github.io/fran/";
+new QRCode(document.getElementById("qr"), { text: SITE, width: 260, height: 260, colorDark: "#2e1630" });
 </script>
 </body>
 </html>
