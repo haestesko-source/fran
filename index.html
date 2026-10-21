@@ -135,11 +135,7 @@ input[type=text]:focus, textarea:focus { border-color: var(--accent); }
 .btn.ghost { background: transparent; color: var(--ink); flex: 0 0 auto; }
 .btn:focus-visible, .opt:focus-visible, .scale button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
-.recap { display: flex; flex-direction: column; gap: 12px; max-height: 260px; overflow-y: auto; }
-.recap div { border-top: 1px solid var(--line); padding-top: 10px; }
-.recap b { display: block; font-size: 13px; color: var(--muted); font-weight: 400; margin-bottom: 2px; }
 .heart { font-size: 46px; color: var(--accent); line-height: 1; }
-.small { font-size: 13px; }
 </style>
 </head>
 <body>
@@ -254,23 +250,27 @@ async function send() {
       ok = r.ok && String(data.success) === "true";
     } catch (e) { ok = false; }
   }
-  done(ok);
+  if (ok) done(); else failed();
 }
 
-function done(sent) {
+function done() {
   $("count").textContent = "Merci";
   i = QUESTIONS.length;
   dots();
-  const recap = el("div", { className: "recap" },
-    QUESTIONS.map((Q, k) => el("div", {}, [el("b", { textContent: Q.q }), el("span", { textContent: answers[k] })])));
   $("body").replaceChildren(el("div", { className: "step" }, [
     el("div", { className: "heart", textContent: "♥" }),
     el("h1", { innerHTML: "Merci, mon <em>cœur</em>" }),
-    el("p", { className: "small", textContent: sent
-      ? "Tes réponses sont bien arrivées."
-      : "Fais une capture d'écran de tes réponses et envoie-la moi." }),
-    recap,
+    el("p", { textContent: "Tes réponses sont bien arrivées." }),
   ]));
+}
+
+// Les réponses restent en mémoire : « Réessayer » renvoie les mêmes
+function failed() {
+  $("body").replaceChildren(el("div", { className: "step" }, [
+    el("h2", { textContent: "L'envoi n'a pas marché" }),
+    el("p", { textContent: "Vérifie ta connexion internet, puis réessaie." }),
+  ]));
+  $("nav").replaceChildren(el("button", { className: "btn", textContent: "Réessayer", onclick: send }));
 }
 
 render();
