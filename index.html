@@ -19,7 +19,9 @@
 const EMAIL = "haestesko@gmail.com"; // ← adresse qui reçoit les réponses par mail
 const PRENOM = "toi"; // ← son prénom, s'affiche sur la première carte
 
-const TITRE = "Pardon."; // ← le message de la première page
+const INTRO = "Françoise…"; // ← la toute première page
+
+const TITRE = "Pardon."; // ← le message de la page « Pardon. »
 const MESSAGE = [
   "Je t'ai mal parlé par msg et tu ne méritais pas ça. Je ne cherche pas à me justifier : j'ai eu tort, et je le regrette sincèrement.",
 ];
@@ -159,7 +161,7 @@ input[type=text]:focus, textarea:focus { border-color: var(--accent); }
 
 <script>
 const answers = QUESTIONS.map(Q => Q.type === "ouinon" ? { choix: "", heure: "" } : "");
-let i = -1; // -1 = écran d'accueil
+let i = -2; // -2 = toute première page, -1 = page « Pardon. »
 
 const $ = (id) => document.getElementById(id);
 const el = (tag, props = {}, kids = []) => {
@@ -179,6 +181,13 @@ function render() {
   const body = $("body"), nav = $("nav");
   body.replaceChildren();
   nav.replaceChildren();
+
+  if (i === -2) {
+    $("count").textContent = "";
+    body.append(el("div", { className: "step" }, [el("h1", { textContent: INTRO })]));
+    nav.append(el("button", { className: "btn", textContent: "Continuer", onclick: () => { i = -1; render(); } }));
+    return;
+  }
 
   if (i === -1) {
     $("count").textContent = "Pour " + PRENOM;
