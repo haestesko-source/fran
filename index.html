@@ -16,6 +16,11 @@
 const EMAIL = "haestesko@gmail.com"; // ← adresse qui reçoit les réponses par mail
 const PRENOM = "toi"; // ← son prénom, s'affiche sur la première carte
 
+const TITRE = "Pardon."; // ← le message de la première page
+const MESSAGE = [
+  "Je t'ai mal parlé par msg et tu ne méritais pas ça. Je ne cherche pas à me justifier : j'ai eu tort, et je le regrette sincèrement.",
+];
+
 const QUESTIONS = [
   { type: "texte", q: "Quel est ton meilleur souvenir avec moi ?" },
   { type: "note",  q: "De 1 à 10, à quel point tu es heureuse en ce moment ?" },
@@ -87,6 +92,7 @@ h1 { font-size: 42px; }
 h1 em { color: var(--accent); }
 h2 { font-size: 30px; }
 p { margin: 0; line-height: 1.5; color: var(--muted); }
+.msg { color: var(--ink); font-size: 17px; }
 .body { flex: 1; display: flex; flex-direction: column; gap: 16px; }
 .step { animation: in .35s ease both; display: flex; flex-direction: column; gap: 18px; }
 @keyframes in { from { opacity: .3; transform: translateY(8px); } to { opacity: 1; transform: none; } }
@@ -172,11 +178,10 @@ function render() {
   if (i === -1) {
     $("count").textContent = "Pour " + PRENOM;
     body.append(el("div", { className: "step" }, [
-      el("div", { className: "heart", textContent: "♥" }),
-      el("h1", { innerHTML: "J'ai quelques <em>questions</em> pour toi…" }),
-      el("p", { textContent: "Réponds avec ton cœur, il n'y a pas de mauvaise réponse. Ça prend deux minutes." }),
+      el("h1", { textContent: TITRE }),
+      ...MESSAGE.map(t => el("p", { className: "msg", textContent: t })),
     ]));
-    nav.append(el("button", { className: "btn", textContent: "On commence", onclick: () => { i = 0; render(); } }));
+    nav.append(el("button", { className: "btn", textContent: "Continuer", onclick: () => { i = 0; render(); } }));
     return;
   }
 
