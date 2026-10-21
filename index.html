@@ -186,7 +186,7 @@ function render() {
   }
 
   const Q = QUESTIONS[i];
-  $("count").textContent = `Question ${i + 1} / ${QUESTIONS.length}`;
+  $("count").textContent = "";
   const step = el("div", { className: "step" }, [el("h2", { textContent: Q.q })]);
   const next = el("button", { className: "btn", textContent: i === QUESTIONS.length - 1 ? "Envoyer ♥" : "Suivant" });
   const update = () => { next.disabled = !String(answers[i]).trim(); };
