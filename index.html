@@ -11,7 +11,10 @@
 /* =====================================================================
    TES QUESTIONS — modifie-les ici
    type: "texte" (réponse courte), "long" (paragraphe),
-         "choix" (une option parmi plusieurs), "note" (de 1 à 10)
+         "choix" (une option parmi plusieurs), "note" (de 1 à 10),
+         "message" (juste du texte, sans réponse),
+         "ouinon" (boutons Oui / Non ; si Oui, une case à remplir)
+   placeholder (facultatif) : le texte gris affiché dans la case vide
    ===================================================================== */
 const EMAIL = "haestesko@gmail.com"; // ← adresse qui reçoit les réponses par mail
 const PRENOM = "toi"; // ← son prénom, s'affiche sur la première carte
@@ -21,26 +24,28 @@ const MESSAGE = [
   "Je t'ai mal parlé par msg et tu ne méritais pas ça. Je ne cherche pas à me justifier : j'ai eu tort, et je le regrette sincèrement.",
 ];
 
+const CITATION = "Un seul être vous manque, et tout est dépeuplé"; // ← la dernière page, après l'envoi
+const AUTEUR = "Lamartine";
+
 const QUESTIONS = [
-  { type: "texte", q: "Quel est ton meilleur souvenir avec moi ?" },
-  { type: "note",  q: "De 1 à 10, à quel point tu es heureuse en ce moment ?" },
-  { type: "choix", q: "Notre prochain rendez-vous idéal, ce serait…",
-    options: ["Un resto en amoureux", "Une soirée film sous la couette", "Un week-end surprise", "Une balade au coucher du soleil"] },
-  { type: "texte", q: "Un plat que tu voudrais que j'apprenne à cuisiner pour toi ?" },
-  { type: "choix", q: "Qui dit « je t'aime » en premier le plus souvent ?",
-    options: ["Moi", "Toi", "Égalité parfaite"] },
-  { type: "texte", q: "Décris-moi en un seul mot." },
-  { type: "long",  q: "Un petit message pour moi ?" },
+  { type: "message", q: "Aujourd'hui je ne veux pas de msg" },
+  { type: "message", q: "J'ai menti sur mon âge et je comprends que pour toi la situation soit ambiguë" },
+  { type: "message", q: "Je te demande pardon aussi pour ça" },
+  { type: "message", q: "Je m'attendais tout simplement pas à tomber sur quelqu'un d'aussi exceptionnelle et là, boom, dans ma tête plus rien fonctionne" },
+  { type: "message", q: "Car la vie est faite d'imprévus, c'est ça qui la rend plus belle" },
+  { type: "message", q: "Venons-en au but" },
+  { type: "ouinon", q: "Si tu acceptes de me dire ton heure d'arrivée, je saurai que tu veux que je te retrouve, sinon je te laisserai tranquille et tu entendras plus parler de moi",
+    placeholder: "Ton heure d'arrivée" },
 ];
 </script>
 <style>
-/* Layout : une seule carte centrée sur un fond lilas, une question à la fois */
+/* Layout : une seule carte sur un fond lilas, texte centré, une question à la fois */
 :root {
   --bg: #efe6f3;
   --bg-2: #e3d3ec;
   --card: #fffafc;
   --ink: #2e1630;
-  --muted: #7b6680;
+  --muted: #6b5671;
   --accent: #d6336c;
   --accent-soft: #fbe1ea;
   --line: #e6d9e9;
@@ -75,12 +80,10 @@ body {
   flex-direction: column;
   gap: 20px;
   min-height: 360px;
+  text-align: center;
 }
-.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.count { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; }
-.dots { display: flex; gap: 5px; }
-.dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--line); transition: background .3s; }
-.dots span.on { background: var(--accent); }
+.count { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.count:empty { display: none; }
 h1, h2 {
   font-family: var(--display);
   font-weight: 400;
@@ -89,11 +92,11 @@ h1, h2 {
   text-wrap: balance;
 }
 h1 { font-size: 42px; }
-h1 em { color: var(--accent); }
 h2 { font-size: 30px; }
 p { margin: 0; line-height: 1.5; color: var(--muted); }
 .msg { color: var(--ink); font-size: 17px; }
-.body { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+.quote { font-style: italic; }
+.body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; }
 .step { animation: in .35s ease both; display: flex; flex-direction: column; gap: 18px; }
 @keyframes in { from { opacity: .3; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .step { animation: none; } }
@@ -101,6 +104,7 @@ p { margin: 0; line-height: 1.5; color: var(--muted); }
 input[type=text], textarea {
   width: 100%;
   font: inherit;
+  text-align: center;
   color: var(--ink);
   background: #fff;
   border: 1.5px solid var(--line);
@@ -114,12 +118,14 @@ input[type=text]:focus, textarea:focus { border-color: var(--accent); }
 
 .options { display: flex; flex-direction: column; gap: 10px; }
 .opt {
-  font: inherit; text-align: left; color: var(--ink);
+  font: inherit; text-align: center; color: var(--ink);
   background: #fff; border: 1.5px solid var(--line); border-radius: 14px;
   padding: 13px 16px; cursor: pointer; transition: all .15s;
 }
 .opt:hover { border-color: var(--accent); }
 .opt.sel { background: var(--accent-soft); border-color: var(--accent); font-weight: 500; }
+.options.duo { flex-direction: row; }
+.duo .opt { flex: 1; }
 
 .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
 .scale button {
@@ -141,21 +147,17 @@ input[type=text]:focus, textarea:focus { border-color: var(--accent); }
 .btn.ghost { background: transparent; color: var(--ink); flex: 0 0 auto; }
 .btn:focus-visible, .opt:focus-visible, .scale button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
-.heart { font-size: 46px; color: var(--accent); line-height: 1; }
 </style>
 </head>
 <body>
 <main class="card" id="card">
-  <div class="top">
-    <span class="count" id="count">Pour toi</span>
-    <div class="dots" id="dots"></div>
-  </div>
+  <span class="count" id="count">Pour toi</span>
   <div class="body" id="body"></div>
   <div class="nav" id="nav"></div>
 </main>
 
 <script>
-const answers = QUESTIONS.map(() => "");
+const answers = QUESTIONS.map(Q => Q.type === "ouinon" ? { choix: "", heure: "" } : "");
 let i = -1; // -1 = écran d'accueil
 
 const $ = (id) => document.getElementById(id);
@@ -165,12 +167,14 @@ const el = (tag, props = {}, kids = []) => {
   return n;
 };
 
-function dots() {
-  $("dots").replaceChildren(...QUESTIONS.map((_, k) => el("span", { className: k <= i ? "on" : "" })));
+// Le bouton Suivant / Envoyer ne s'active que quand la page est remplie
+function ready(Q, a) {
+  if (Q.type === "message") return true;
+  if (Q.type === "ouinon") return a.choix === "Non" || (a.choix === "Oui" && a.heure.trim() !== "");
+  return String(a).trim() !== "";
 }
 
 function render() {
-  dots();
   const body = $("body"), nav = $("nav");
   body.replaceChildren();
   nav.replaceChildren();
@@ -188,13 +192,13 @@ function render() {
   const Q = QUESTIONS[i];
   $("count").textContent = "";
   const step = el("div", { className: "step" }, [el("h2", { textContent: Q.q })]);
-  const next = el("button", { className: "btn", textContent: i === QUESTIONS.length - 1 ? "Envoyer ♥" : "Suivant" });
-  const update = () => { next.disabled = !String(answers[i]).trim(); };
+  const next = el("button", { className: "btn", textContent: i === QUESTIONS.length - 1 ? "Envoyer" : "Suivant" });
+  const update = () => { next.disabled = !ready(Q, answers[i]); };
 
   if (Q.type === "texte" || Q.type === "long") {
     const input = Q.type === "long"
-      ? el("textarea", { id: "a" + i, placeholder: "Écris ici…" })
-      : el("input", { id: "a" + i, type: "text", placeholder: "Écris ici…" });
+      ? el("textarea", { id: "a" + i, placeholder: Q.placeholder || "Écris ici…" })
+      : el("input", { id: "a" + i, type: "text", placeholder: Q.placeholder || "Écris ici…" });
     input.value = answers[i];
     input.oninput = () => { answers[i] = input.value; update(); };
     if (Q.type === "texte") input.onkeydown = (e) => { if (e.key === "Enter" && !next.disabled) next.click(); };
@@ -225,6 +229,26 @@ function render() {
       box.append(b);
     }
     step.append(box, el("div", { className: "scale-legend" }, [el("span", { textContent: "un peu" }), el("span", { textContent: "énormément" })]));
+  } else if (Q.type === "ouinon") {
+    const a = answers[i];
+    const box = el("div", { className: "options duo" });
+    const input = el("input", { id: "a" + i, type: "text", placeholder: Q.placeholder || "Écris ici…" });
+    input.value = a.heure;
+    input.hidden = a.choix !== "Oui";
+    input.oninput = () => { a.heure = input.value; update(); };
+    input.onkeydown = (e) => { if (e.key === "Enter" && !next.disabled) next.click(); };
+    ["Oui", "Non"].forEach(o => {
+      const b = el("button", { className: "opt" + (a.choix === o ? " sel" : ""), textContent: o });
+      b.onclick = () => {
+        a.choix = o;
+        box.querySelectorAll(".opt").forEach(x => x.classList.toggle("sel", x === b));
+        input.hidden = o !== "Oui";
+        if (o === "Oui") input.focus();
+        update();
+      };
+      box.append(b);
+    });
+    step.append(box, input);
   }
 
   body.append(step);
@@ -243,7 +267,16 @@ async function send() {
   let ok = false;
   if (EMAIL) {
     const payload = { _subject: "Ses réponses ♥", _template: "box" };
-    QUESTIONS.forEach((Q, k) => { payload[`${k + 1}. ${Q.q}`] = answers[k]; });
+    let n = 0;
+    QUESTIONS.forEach((Q, k) => {
+      if (Q.type === "message") return;
+      let a = answers[k];
+      if (Q.type === "ouinon") {
+        payload._subject = "Sa réponse : " + a.choix; // Oui ou Non directement dans l'objet du mail
+        a = a.choix === "Oui" ? "Oui — " + a.heure : "Non";
+      }
+      payload[`${++n}. ${Q.q}`] = a;
+    });
     try {
       const r = await fetch("https://formsubmit.co/ajax/" + EMAIL, {
         method: "POST",
@@ -259,14 +292,12 @@ async function send() {
 }
 
 function done() {
-  $("count").textContent = "Merci";
-  i = QUESTIONS.length;
-  dots();
+  $("count").textContent = "";
   $("body").replaceChildren(el("div", { className: "step" }, [
-    el("div", { className: "heart", textContent: "♥" }),
-    el("h1", { innerHTML: "Merci, mon <em>cœur</em>" }),
-    el("p", { textContent: "Tes réponses sont bien arrivées." }),
+    el("h2", { className: "quote", textContent: CITATION }),
+    el("p", { textContent: AUTEUR }),
   ]));
+  $("nav").replaceChildren();
 }
 
 // Les réponses restent en mémoire : « Réessayer » renvoie les mêmes
