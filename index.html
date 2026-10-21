@@ -294,8 +294,8 @@ async function send() {
 function done() {
   $("count").textContent = "";
   $("body").replaceChildren(el("div", { className: "step" }, [
-    el("h2", { className: "quote", textContent: CITATION }),
-    el("p", { textContent: AUTEUR }),
+    el("p", { className: "msg", textContent: AUTEUR + " a dit un jour :" }),
+    el("h2", { className: "quote", textContent: "« " + CITATION + " »" }),
   ]));
   $("nav").replaceChildren();
 }
